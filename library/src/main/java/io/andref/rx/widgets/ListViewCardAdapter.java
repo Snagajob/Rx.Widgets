@@ -15,16 +15,19 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
 import static android.view.View.GONE;
 import static io.andref.rx.widgets.ListViewCard.TAG;
 
-public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemClickListener
+public class ListViewCardAdapter extends RecyclerView.Adapter
 {
     private List<ListViewCard.Item> mItems = new ArrayList<>();
 
@@ -53,7 +56,32 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
         {
             default:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rxw_avatar_with_two_lines_and_icon, parent, false);
-                return new ViewHolder(this, view, mCellHeight);
+                final ViewHolder viewHolder = new ViewHolder(view, mCellHeight);
+
+                RxView.clicks(view)
+                        .takeUntil(RxView.detaches(parent))
+                        .subscribe(new Action1<Void>()
+                        {
+                            @Override
+                            public void call(Void aVoid)
+                            {
+                                mItemClicks.onNext(new Pair<>(mItems.get(viewHolder.getAdapterPosition()), viewHolder.getAdapterPosition()));
+                            }
+                        });
+
+                View iconView = view.findViewById(R.id.image_button);
+                RxView.clicks(iconView)
+                        .takeUntil(RxView.detaches(parent))
+                        .subscribe(new Action1<Void>()
+                        {
+                            @Override
+                            public void call(Void aVoid)
+                            {
+                                mIconClicks.onNext(new Pair<>(mItems.get(viewHolder.getAdapterPosition()), viewHolder.getAdapterPosition()));
+                            }
+                        });
+
+                return viewHolder;
         }
     }
 
@@ -63,7 +91,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
         switch (getItemViewType(adapterPosition))
         {
             default:
-                ViewHolder viewHolder = (ViewHolder) holder;
+                final ViewHolder viewHolder = (ViewHolder) holder;
                 viewHolder.bindItem(mItems.get(adapterPosition), mAvatarAlpha, mAvatarTint, mIconAlpha);
                 if (adapterPosition == getItemCount() - 1)
                 {
@@ -84,18 +112,6 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
     public int getItemCount()
     {
         return mItems != null ? mItems.size() : 0;
-    }
-
-    @Override
-    public void onItemClicked(int position)
-    {
-        mItemClicks.onNext(new Pair<>(mItems.get(position), position));
-    }
-
-    @Override
-    public void onIconClicked(int position)
-    {
-        mIconClicks.onNext(new Pair<>(mItems.get(position), position));
     }
 
     public Observable<Pair<ListViewCard.Item, Integer>> itemClicks()
@@ -165,7 +181,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
         private View mListItemSeparator;
         private Context mContext;
 
-        private ViewHolder(final ItemClickListener itemClickListener, View itemView, float viewHeight)
+        private ViewHolder(View itemView, float viewHeight)
         {
             super(itemView);
             mImageView = (ImageView) itemView.findViewById(R.id.image_view_1);
@@ -175,24 +191,6 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
             mListItemSeparator = itemView.findViewById(R.id.list_item_separator);
             mContext = itemView.getContext();
             itemView.getLayoutParams().height = (int) viewHeight;
-
-            itemView.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    itemClickListener.onItemClicked(getAdapterPosition());
-                }
-            });
-
-            mImageButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    itemClickListener.onIconClicked(getAdapterPosition());
-                }
-            });
         }
 
         private void bindItem(ListViewCard.Item item, float avatarAlpha, int avatarTint, float iconAlpha)
