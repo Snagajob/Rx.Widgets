@@ -15,7 +15,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -89,10 +88,9 @@ public class ListViewCard extends FrameLayout
         float cellHeight = denseListItem ? getResources().getDimension(R.dimen.rxw_dense_avatar_with_two_lines_and_icon_tile_height)
                 : getResources().getDimension(R.dimen.rxw_avatar_with_two_lines_and_icon_tile_height);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.height = (int) cellHeight;
-
         mButton = (FrameLayout) cardView.findViewById(R.id.button);
+        ViewGroup.LayoutParams layoutParams = mButton.getLayoutParams();
+        layoutParams.height = (int) cellHeight;
         mButton.setLayoutParams(layoutParams);
         mButtonClicks = RxView.clicks(mButton);
         mButtonText = (TextView) cardView.findViewById(R.id.button_text);
