@@ -2,54 +2,37 @@ package io.andref.rx.widgets;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.v4.util.Pair;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
-import rx.subjects.PublishSubject;
 
 public class ListViewCard extends FrameLayout
 {
-    private static final String TAG = "ListViewCard";
-
-    private List<Item> mItems = new ArrayList<>();
-
-    private final PublishSubject<Item> mItemClicks = PublishSubject.create();
-    private final PublishSubject<Item> mIconClicks = PublishSubject.create();
+    public static final String TAG = "ListViewCard";
 
     private Observable<Void> mButtonClicks = Observable.empty();
 
     private FrameLayout mButton;
     private TextView mButtonText;
-    private LinearLayout mContainer;
-
-    private float mAvatarAlpha;
-    private int mAvatarTint;
-    private boolean mDenseListItem;
-    private float mIconAlpha;
+    private ListViewCardAdapter mListViewCardAdapter;
 
     public ListViewCard(@NonNull Context context)
     {
@@ -80,16 +63,19 @@ public class ListViewCard extends FrameLayout
     private void initializeViews(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes)
     {
         String buttonText;
+        float avatarAlpha, iconAlpha;
+        int avatarTint;
+        boolean denseListItem;
 
         final TypedArray a = context.getTheme()
                 .obtainStyledAttributes(attrs, R.styleable.ListViewCard, defStyleAttr, 0);
 
         try
         {
-            mAvatarAlpha = a.getFloat(R.styleable.ListViewCard_rxw_avatarAlpha, 1f);
-            mAvatarTint = a.getColor(R.styleable.ListViewCard_rxw_avatarTint, Color.BLACK);
-            mDenseListItem = a.getBoolean(R.styleable.ListViewCard_rxw_denseLayout, false);
-            mIconAlpha = a.getFloat(R.styleable.ListViewCard_rxw_iconAlpha, .54f);
+            avatarAlpha = a.getFloat(R.styleable.ListViewCard_rxw_avatarAlpha, 1f);
+            avatarTint = a.getColor(R.styleable.ListViewCard_rxw_avatarTint, Color.BLACK);
+            denseListItem = a.getBoolean(R.styleable.ListViewCard_rxw_denseLayout, false);
+            iconAlpha = a.getFloat(R.styleable.ListViewCard_rxw_iconAlpha, .54f);
 
             buttonText = a.getString(R.styleable.ListViewCard_rxw_buttonText);
         }
@@ -100,127 +86,22 @@ public class ListViewCard extends FrameLayout
 
         View cardView = inflate(context, R.layout.rxw_list_view_card, this);
 
-        mButton = (FrameLayout) cardView.findViewById(R.id.button);
+        float cellHeight = denseListItem ? getResources().getDimension(R.dimen.rxw_dense_avatar_with_two_lines_and_icon_tile_height)
+                : getResources().getDimension(R.dimen.rxw_avatar_with_two_lines_and_icon_tile_height);
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.height = (int) (mDenseListItem ? getResources().getDimension(R.dimen.rxw_dense_avatar_with_two_lines_and_icon_tile_height)
-                : getResources().getDimension(R.dimen.rxw_avatar_with_two_lines_and_icon_tile_height));
+        layoutParams.height = (int) cellHeight;
+
+        mButton = (FrameLayout) cardView.findViewById(R.id.button);
         mButton.setLayoutParams(layoutParams);
-
         mButtonClicks = RxView.clicks(mButton);
-
         mButtonText = (TextView) cardView.findViewById(R.id.button_text);
         mButtonText.setText(buttonText);
 
-        mContainer = (LinearLayout) cardView.findViewById(R.id.container);
-        mContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-    }
-
-    private void layoutViews()
-    {
-        mContainer.removeAllViews();
-
-        List<Observable<Item>> itemObservables = new ArrayList<>();
-        List<Observable<Item>> iconObservables = new ArrayList<>();
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.height = (int) (mDenseListItem ? getResources().getDimension(R.dimen.rxw_dense_avatar_with_two_lines_and_icon_tile_height)
-                : getResources().getDimension(R.dimen.rxw_avatar_with_two_lines_and_icon_tile_height));
-
-        for (int position = 0; position < mItems.size(); position++)
-        {
-            final Item item = mItems.get(position);
-            if (item != null)
-            {
-                View view = inflate(getContext(), R.layout.rxw_avatar_with_two_lines_and_icon, null);
-                view.setLayoutParams(layoutParams);
-
-                TextView textView1 = (TextView) view.findViewById(R.id.text_view_1);
-                textView1.setText(item.getLine1());
-
-                TextView textView2 = (TextView) view.findViewById(R.id.text_view_2);
-                textView2.setText(item.getLine2());
-
-                ImageView imageView = (ImageView) view.findViewById(R.id.image_view_1);
-                ImageButton imageButton = (ImageButton) view.findViewById(R.id.image_button);
-
-                try
-                {
-                    if (item.getAvatarResourceId() != 0)
-                    {
-                        imageView.setAlpha(mAvatarAlpha);
-
-                        Drawable drawable = getResources().getDrawable(item.getAvatarResourceId());
-                        if (drawable != null)
-                        {
-                            drawable.mutate().setColorFilter(mAvatarTint, PorterDuff.Mode.SRC_ATOP);
-                            imageView.setImageDrawable(drawable);
-                        }
-                    }
-                    else
-                    {
-                        imageView.setVisibility(INVISIBLE);
-                    }
-                }
-                catch (Resources.NotFoundException exception)
-                {
-                    imageView.setVisibility(INVISIBLE);
-                    Log.e(TAG, "Drawable resource not found: " + exception.getMessage());
-                }
-
-                try
-                {
-                    if (item.getIconResourceId() != 0)
-                    {
-                        imageButton.setImageResource(item.getIconResourceId());
-                        imageButton.setAlpha(mIconAlpha);
-                    }
-                    else
-                    {
-                        imageButton.setVisibility(INVISIBLE);
-                        imageButton.setClickable(false);
-                    }
-                }
-                catch (Resources.NotFoundException exception)
-                {
-                    imageView.setVisibility(INVISIBLE);
-                    Log.e(TAG, "Drawable resource not found: " + exception.getMessage());
-                }
-
-                itemObservables.add(
-                        RxView.clicks(view)
-                                .map(new Func1<Void, Item>()
-                                {
-                                    @Override
-                                    public Item call(Void aVoid)
-                                    {
-                                        return item;
-                                    }
-                                })
-                );
-
-                iconObservables.add(
-                        RxView.clicks(imageButton)
-                                .map(new Func1<Void, Item>()
-                                {
-                                    @Override
-                                    public Item call(Void aVoid)
-                                    {
-                                        return item;
-                                    }
-                                })
-                );
-
-                mContainer.addView(view);
-            }
-
-            Observable.merge(itemObservables)
-                    .takeUntil(RxView.detaches(this))
-                    .subscribe(mItemClicks);
-
-            Observable.merge(iconObservables)
-                    .takeUntil(RxView.detaches(this))
-                    .subscribe(mIconClicks);
-        }
+        mListViewCardAdapter = new ListViewCardAdapter(cellHeight, avatarAlpha, iconAlpha, avatarTint);
+        RecyclerView recyclerView = (RecyclerView) cardView.findViewById(R.id.recycler_view);
+        recyclerView.setAdapter(mListViewCardAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
     // region Getters/Setters
@@ -235,27 +116,34 @@ public class ListViewCard extends FrameLayout
         mButtonText.setText(text);
     }
 
-    public void addItem(Item item)
-    {
-        mItems.add(item);
-        layoutViews();
-    }
-
     public List<Item> getItems()
     {
-        return mItems;
+        return mListViewCardAdapter.getItems();
+    }
+
+    public void addItem(Item item)
+    {
+        mListViewCardAdapter.addItem(item);
+    }
+
+    public void removeItem(Item item)
+    {
+        mListViewCardAdapter.removeItem(item);
     }
 
     public void removeItem(int position)
     {
-        mItems.remove(position);
-        layoutViews();
+        mListViewCardAdapter.removeItem(position);
     }
 
     public void setItems(List<Item> items)
     {
-        mItems = items;
-        layoutViews();
+        mListViewCardAdapter.setItems(items);
+    }
+
+    public void updateItem(int position, Item item)
+    {
+        mListViewCardAdapter.updateItem(position, item);
     }
 
     // endregion
@@ -267,14 +155,14 @@ public class ListViewCard extends FrameLayout
         return mButtonClicks;
     }
 
-    public Observable<Item> iconClicks()
+    public Observable<Pair<Item, Integer>> iconClicks()
     {
-        return mIconClicks;
+        return mListViewCardAdapter.iconClicks();
     }
 
-    public Observable<Item> itemClicks()
+    public Observable<Pair<Item, Integer>> itemClicks()
     {
-        return mItemClicks;
+        return mListViewCardAdapter.itemClicks();
     }
 
     // endregion
@@ -284,31 +172,11 @@ public class ListViewCard extends FrameLayout
     public void hideButton()
     {
         mButton.setVisibility(GONE);
-
-        if (mContainer.getChildCount() > 0)
-        {
-            View parent = mContainer.getChildAt(mContainer.getChildCount() - 1);
-            if (parent != null)
-            {
-                View view = parent.findViewById(R.id.list_item_separator);
-                view.setVisibility(INVISIBLE);
-            }
-        }
     }
 
     public void showButton()
     {
         mButton.setVisibility(VISIBLE);
-
-        if (mContainer.getChildCount() > 0)
-        {
-            View parent = mContainer.getChildAt(mContainer.getChildCount() - 1);
-            if (parent != null)
-            {
-                View view = parent.findViewById(R.id.list_item_separator);
-                view.setVisibility(VISIBLE);
-            }
-        }
     }
 
     // endregion
@@ -388,5 +256,32 @@ public class ListViewCard extends FrameLayout
         }
 
         // endregion
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Item<?> item = (Item<?>) o;
+
+            if (mAvatarResourceId != item.mAvatarResourceId) return false;
+            if (mIconResourceId != item.mIconResourceId) return false;
+            if (mLine1 != null ? !mLine1.equals(item.mLine1) : item.mLine1 != null) return false;
+            if (mLine2 != null ? !mLine2.equals(item.mLine2) : item.mLine2 != null) return false;
+            return mData != null ? mData.equals(item.mData) : item.mData == null;
+
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int result = mAvatarResourceId;
+            result = 31 * result + mIconResourceId;
+            result = 31 * result + (mLine1 != null ? mLine1.hashCode() : 0);
+            result = 31 * result + (mLine2 != null ? mLine2.hashCode() : 0);
+            result = 31 * result + (mData != null ? mData.hashCode() : 0);
+            return result;
+        }
     }
 }
