@@ -36,6 +36,8 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
     private float mIconAlpha;
     private int mAvatarTint;
 
+    private boolean mShowLastDivider = true;
+
     public ListViewCardAdapter(float cellHeight, float avatarAlpha, float iconAlpha, int avatarTint)
     {
         mCellHeight = cellHeight;
@@ -61,7 +63,19 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
         switch (getItemViewType(adapterPosition))
         {
             default:
-                ((ViewHolder) holder).bindItem(mItems.get(adapterPosition), mAvatarAlpha, mAvatarTint, mIconAlpha);
+                ViewHolder viewHolder = (ViewHolder) holder;
+                viewHolder.bindItem(mItems.get(adapterPosition), mAvatarAlpha, mAvatarTint, mIconAlpha);
+                if (adapterPosition == getItemCount() - 1)
+                {
+                    if (mShowLastDivider)
+                    {
+                        viewHolder.showDivider();
+                    }
+                    else
+                    {
+                        viewHolder.hideDivider();
+                    }
+                }
                 break;
         }
     }
@@ -130,7 +144,17 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
         notifyItemChanged(adapterPosition);
     }
 
+    public void hideDivider()
+    {
+        mShowLastDivider = false;
+        notifyItemChanged(getItemCount() - 1);
+    }
 
+    public void showDivider()
+    {
+        mShowLastDivider = true;
+        notifyItemChanged(getItemCount() - 1);
+    }
 
     private static class ViewHolder extends RecyclerView.ViewHolder
     {
@@ -138,6 +162,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
         private TextView mTextView1;
         private TextView mTextView2;
         private ImageButton mImageButton;
+        private View mListItemSeparator;
         private Context mContext;
 
         private ViewHolder(final ItemClickListener itemClickListener, View itemView, float viewHeight)
@@ -147,6 +172,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
             mTextView1 = (TextView) itemView.findViewById(R.id.text_view_1);
             mTextView2 = (TextView) itemView.findViewById(R.id.text_view_2);
             mImageButton = (ImageButton) itemView.findViewById(R.id.image_button);
+            mListItemSeparator = itemView.findViewById(R.id.list_item_separator);
             mContext = itemView.getContext();
             itemView.getLayoutParams().height = (int) viewHeight;
 
@@ -225,6 +251,16 @@ public class ListViewCardAdapter extends RecyclerView.Adapter implements ItemCli
                 mImageButton.setVisibility(GONE);
                 Log.e(TAG, "Drawable resource not found: " + exception.getMessage());
             }
+        }
+
+        private void showDivider()
+        {
+            mListItemSeparator.setVisibility(View.VISIBLE);
+        }
+
+        private void hideDivider()
+        {
+            mListItemSeparator.setVisibility(View.INVISIBLE);
         }
     }
 }
