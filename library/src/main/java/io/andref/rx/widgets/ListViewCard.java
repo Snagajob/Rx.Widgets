@@ -172,11 +172,13 @@ public class ListViewCard extends FrameLayout
     public void hideButton()
     {
         mButton.setVisibility(GONE);
+        mListViewCardAdapter.hideDivider();
     }
 
     public void showButton()
     {
         mButton.setVisibility(VISIBLE);
+        mListViewCardAdapter.showDivider();
     }
 
     // endregion
