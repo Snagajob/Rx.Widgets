@@ -8,7 +8,6 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -100,6 +99,7 @@ public class ListViewCard extends FrameLayout
         RecyclerView recyclerView = (RecyclerView) cardView.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(mListViewCardAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     // region Getters/Setters
