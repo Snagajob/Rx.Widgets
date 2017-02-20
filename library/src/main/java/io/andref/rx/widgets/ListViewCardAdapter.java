@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -108,7 +109,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
         return mIconClicks;
     }
 
-    public void setItems(List<ListViewCard.Item> items)
+    public void setItems(@NonNull List<ListViewCard.Item> items)
     {
         mItems = items;
         notifyDataSetChanged();
@@ -128,20 +129,29 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
     public void removeItem(ListViewCard.Item item)
     {
         int indexOfItem = mItems.indexOf(item);
-        mItems.remove(indexOfItem);
-        notifyItemRemoved(indexOfItem);
+        if (indexOfItem >= 0 && indexOfItem < getItemCount())
+        {
+            mItems.remove(indexOfItem);
+            notifyItemRemoved(indexOfItem);
+        }
     }
 
     public void removeItem(int position)
     {
-        mItems.remove(position);
-        notifyItemRemoved(position);
+        if (position >= 0 && position < getItemCount())
+        {
+            mItems.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 
     public void updateItem(int adapterPosition, ListViewCard.Item item)
     {
-        mItems.set(adapterPosition, item);
-        notifyItemChanged(adapterPosition);
+        if (adapterPosition >= 0 && < getItemCount())
+        {
+            mItems.set(adapterPosition, item);
+            notifyItemChanged(adapterPosition);
+        }
     }
 
     public void hideDivider()
