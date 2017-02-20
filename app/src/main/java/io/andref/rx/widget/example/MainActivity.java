@@ -61,15 +61,6 @@ public class MainActivity extends AppCompatActivity
         listViewCardItems.add(new ListViewCard.Item("(804) 555-1234", "Home Phone", R.drawable.ic_phone_black_24dp, R.drawable.ic_sms_black_24dp));
         listViewCardItems.add(new ListViewCard.Item("andrefio@example.com", "Office E-mail", R.drawable.ic_email_black_24dp, 0));
         listViewCardItems.add(new ListViewCard.Item("(804) 555-1234", "Home Phone", R.drawable.ic_phone_black_24dp, R.drawable.ic_sms_black_24dp));
-        listViewCardItems.add(new ListViewCard.Item("andrefio@example.com", "Office E-mail", R.drawable.ic_email_black_24dp, 0));
-        listViewCardItems.add(new ListViewCard.Item("(804) 555-1234", "Home Phone", R.drawable.ic_phone_black_24dp, R.drawable.ic_sms_black_24dp));
-        listViewCardItems.add(new ListViewCard.Item("andrefio@example.com", "Office E-mail", R.drawable.ic_email_black_24dp, 0));
-        listViewCardItems.add(new ListViewCard.Item("(804) 555-1234", "Home Phone", R.drawable.ic_phone_black_24dp, R.drawable.ic_sms_black_24dp));
-        listViewCardItems.add(new ListViewCard.Item("andrefio@example.com", "Office E-mail", R.drawable.ic_email_black_24dp, 0));
-        listViewCardItems.add(new ListViewCard.Item("(804) 555-1234", "Home Phone", R.drawable.ic_phone_black_24dp, R.drawable.ic_sms_black_24dp));
-        listViewCardItems.add(new ListViewCard.Item("andrefio@example.com", "Office E-mail", R.drawable.ic_email_black_24dp, 0));
-        listViewCardItems.add(new ListViewCard.Item("(804) 555-1234", "Home Phone", R.drawable.ic_phone_black_24dp, R.drawable.ic_sms_black_24dp));
-        listViewCardItems.add(new ListViewCard.Item("andrefio@example.com", "Office E-mail", R.drawable.ic_email_black_24dp, 0));
 
         mListViewCard = (ListViewCard) findViewById(R.id.list_view_card);
         mListViewCard.setItems(listViewCardItems);
