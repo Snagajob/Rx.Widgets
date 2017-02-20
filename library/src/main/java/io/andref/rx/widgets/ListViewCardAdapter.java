@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,8 +30,8 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
 {
     private List<ListViewCard.Item> mItems = new ArrayList<>();
 
-    private PublishSubject<Pair<ListViewCard.Item, Integer>> mItemClicks = PublishSubject.create();
-    private PublishSubject<Pair<ListViewCard.Item, Integer>> mIconClicks = PublishSubject.create();
+    private PublishSubject<ListViewCard.Item> mItemClicks = PublishSubject.create();
+    private PublishSubject<ListViewCard.Item> mIconClicks = PublishSubject.create();
 
     private float mCellHeight;
     private float mAvatarAlpha;
@@ -65,7 +64,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
                             @Override
                             public void call(Void aVoid)
                             {
-                                mItemClicks.onNext(new Pair<>(mItems.get(viewHolder.getAdapterPosition()), viewHolder.getAdapterPosition()));
+                                mItemClicks.onNext(mItems.get(viewHolder.getAdapterPosition()));
                             }
                         });
 
@@ -77,7 +76,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
                             @Override
                             public void call(Void aVoid)
                             {
-                                mIconClicks.onNext(new Pair<>(mItems.get(viewHolder.getAdapterPosition()), viewHolder.getAdapterPosition()));
+                                mIconClicks.onNext(mItems.get(viewHolder.getAdapterPosition()));
                             }
                         });
 
@@ -114,12 +113,12 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
         return mItems != null ? mItems.size() : 0;
     }
 
-    public Observable<Pair<ListViewCard.Item, Integer>> itemClicks()
+    public Observable<ListViewCard.Item> itemClicks()
     {
         return mItemClicks;
     }
 
-    public Observable<Pair<ListViewCard.Item, Integer>> iconClicks()
+    public Observable<ListViewCard.Item> iconClicks()
     {
         return mIconClicks;
     }

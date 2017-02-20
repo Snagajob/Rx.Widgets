@@ -1,7 +1,6 @@
 package io.andref.rx.widget.example;
 
 import android.os.Bundle;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.Toast;
@@ -131,24 +130,24 @@ public class MainActivity extends AppCompatActivity
 
         mSubscriptions.add(
                 mListViewCard.itemClicks()
-                        .subscribe(new Action1<Pair<ListViewCard.Item, Integer>>()
+                        .subscribe(new Action1<ListViewCard.Item>()
                         {
                             @Override
-                            public void call(Pair<ListViewCard.Item, Integer> itemIntegerPair)
+                            public void call(ListViewCard.Item item)
                             {
-                                Toast.makeText(getBaseContext(), itemIntegerPair.first.getLine1(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), item.getLine1(), Toast.LENGTH_SHORT).show();
                             }
                         })
         );
 
         mSubscriptions.add(
                 mListViewCard.iconClicks()
-                        .subscribe(new Action1<Pair<ListViewCard.Item, Integer>>()
+                        .subscribe(new Action1<ListViewCard.Item>()
                         {
                             @Override
-                            public void call(Pair<ListViewCard.Item, Integer> itemIntegerPair)
+                            public void call(ListViewCard.Item item)
                             {
-                                Toast.makeText(getBaseContext(), itemIntegerPair.first.getLine1(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), item.getLine1(), Toast.LENGTH_SHORT).show();
                             }
                         })
         );

@@ -153,12 +153,12 @@ public class ListViewCard extends FrameLayout
         return mButtonClicks;
     }
 
-    public Observable<Pair<Item, Integer>> iconClicks()
+    public Observable<Item> iconClicks()
     {
         return mListViewCardAdapter.iconClicks();
     }
 
-    public Observable<Pair<Item, Integer>> itemClicks()
+    public Observable<Item> itemClicks()
     {
         return mListViewCardAdapter.itemClicks();
     }
