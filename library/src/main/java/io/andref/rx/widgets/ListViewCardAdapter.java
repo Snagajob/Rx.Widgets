@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,14 +88,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
         viewHolder.bindItem(mItems.get(adapterPosition), mAvatarAlpha, mAvatarTint, mIconAlpha);
         if (adapterPosition == getItemCount() - 1)
         {
-            if (mShowLastDivider)
-            {
-                viewHolder.showDivider();
-            }
-            else
-            {
-                viewHolder.hideDivider();
-            }
+            viewHolder.setDividerVisibility(mShowLastDivider);
         }
     }
 
@@ -187,7 +181,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
         {
             mTextView1.setText(item.getLine1());
 
-            if (item.getLine2() != null && item.getLine2().length() > 0)
+            if (!TextUtils.isEmpty(item.getLine2()))
             {
                 mTextView2.setVisibility(View.VISIBLE);
                 mTextView2.setText(item.getLine2());
@@ -241,14 +235,16 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
             }
         }
 
-        private void showDivider()
+        private void setDividerVisibility(boolean visible)
         {
-            mListItemSeparator.setVisibility(View.VISIBLE);
-        }
-
-        private void hideDivider()
-        {
-            mListItemSeparator.setVisibility(View.INVISIBLE);
+            if (visible)
+            {
+                mListItemSeparator.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                mListItemSeparator.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }
