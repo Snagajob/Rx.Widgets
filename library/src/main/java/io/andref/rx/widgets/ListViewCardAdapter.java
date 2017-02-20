@@ -51,59 +51,50 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        switch (viewType)
-        {
-            default:
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rxw_avatar_with_two_lines_and_icon, parent, false);
-                final ViewHolder viewHolder = new ViewHolder(view, mCellHeight);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rxw_avatar_with_two_lines_and_icon, parent, false);
+        final ViewHolder viewHolder = new ViewHolder(view, mCellHeight);
 
-                RxView.clicks(view)
-                        .takeUntil(RxView.detaches(parent))
-                        .subscribe(new Action1<Void>()
-                        {
-                            @Override
-                            public void call(Void aVoid)
-                            {
-                                mItemClicks.onNext(mItems.get(viewHolder.getAdapterPosition()));
-                            }
-                        });
+        RxView.clicks(view)
+                .takeUntil(RxView.detaches(parent))
+                .subscribe(new Action1<Void>()
+                {
+                    @Override
+                    public void call(Void aVoid)
+                    {
+                        mItemClicks.onNext(mItems.get(viewHolder.getAdapterPosition()));
+                    }
+                });
 
-                View iconView = view.findViewById(R.id.image_button);
-                RxView.clicks(iconView)
-                        .takeUntil(RxView.detaches(parent))
-                        .subscribe(new Action1<Void>()
-                        {
-                            @Override
-                            public void call(Void aVoid)
-                            {
-                                mIconClicks.onNext(mItems.get(viewHolder.getAdapterPosition()));
-                            }
-                        });
+        View iconView = view.findViewById(R.id.image_button);
+        RxView.clicks(iconView)
+                .takeUntil(RxView.detaches(parent))
+                .subscribe(new Action1<Void>()
+                {
+                    @Override
+                    public void call(Void aVoid)
+                    {
+                        mIconClicks.onNext(mItems.get(viewHolder.getAdapterPosition()));
+                    }
+                });
 
-                return viewHolder;
-        }
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int adapterPosition)
     {
-        switch (getItemViewType(adapterPosition))
+        final ViewHolder viewHolder = (ViewHolder) holder;
+        viewHolder.bindItem(mItems.get(adapterPosition), mAvatarAlpha, mAvatarTint, mIconAlpha);
+        if (adapterPosition == getItemCount() - 1)
         {
-            default:
-                final ViewHolder viewHolder = (ViewHolder) holder;
-                viewHolder.bindItem(mItems.get(adapterPosition), mAvatarAlpha, mAvatarTint, mIconAlpha);
-                if (adapterPosition == getItemCount() - 1)
-                {
-                    if (mShowLastDivider)
-                    {
-                        viewHolder.showDivider();
-                    }
-                    else
-                    {
-                        viewHolder.hideDivider();
-                    }
-                }
-                break;
+            if (mShowLastDivider)
+            {
+                viewHolder.showDivider();
+            }
+            else
+            {
+                viewHolder.hideDivider();
+            }
         }
     }
 
