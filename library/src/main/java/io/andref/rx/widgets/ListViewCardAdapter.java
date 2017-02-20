@@ -96,7 +96,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
     @Override
     public int getItemCount()
     {
-        return mItems != null ? mItems.size() : 0;
+        return mItems.size();
     }
 
     public Observable<ListViewCard.Item> itemClicks()
@@ -147,7 +147,7 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
 
     public void updateItem(int adapterPosition, ListViewCard.Item item)
     {
-        if (adapterPosition >= 0 && < getItemCount())
+        if (adapterPosition >= 0 && adapterPosition < getItemCount())
         {
             mItems.set(adapterPosition, item);
             notifyItemChanged(adapterPosition);
