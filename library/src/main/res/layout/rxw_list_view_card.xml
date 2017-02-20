@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    app:cardUseCompatPadding="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="vertical">
+        android:layout_width="match_parent">
 
-        <LinearLayout
-            android:id="@+id/container"
-            android:layout_height="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:orientation="vertical"/>
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="false"/>
 
         <FrameLayout
             android:id="@+id/button"
+            android:layout_below="@id/recycler_view"
             android:background="?android:selectableItemBackground"
             android:clickable="true"
             android:layout_height="wrap_content"
@@ -36,6 +39,6 @@
 
         </FrameLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.v7.widget.CardView>

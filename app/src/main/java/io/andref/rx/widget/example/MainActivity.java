@@ -1,8 +1,7 @@
 package io.andref.rx.widget.example;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity
 
         listViewCardItems.add(new ListViewCard.Item("(804) 555-1234", "Home Phone", R.drawable.ic_phone_black_24dp, R.drawable.ic_sms_black_24dp));
         listViewCardItems.add(new ListViewCard.Item("andrefio@example.com", "Office E-mail", R.drawable.ic_email_black_24dp, 0));
+        listViewCardItems.add(new ListViewCard.Item("(804) 555-1234", "Home Phone", R.drawable.ic_phone_black_24dp, R.drawable.ic_sms_black_24dp));
 
         mListViewCard = (ListViewCard) findViewById(R.id.list_view_card);
         mListViewCard.setItems(listViewCardItems);
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity
                             @Override
                             public void call(ListViewCard.Item item)
                             {
-                                Toast.makeText(getBaseContext(), "Icon Clicked", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), "Icon Clicked: " + item.getLine1(), Toast.LENGTH_SHORT).show();
                             }
                         })
         );
