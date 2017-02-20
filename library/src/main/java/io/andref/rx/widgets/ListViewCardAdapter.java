@@ -129,29 +129,20 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
     public void removeItem(ListViewCard.Item item)
     {
         int indexOfItem = mItems.indexOf(item);
-        if (indexOfItem >= 0 && indexOfItem < getItemCount())
-        {
-            mItems.remove(indexOfItem);
-            notifyItemRemoved(indexOfItem);
-        }
+        mItems.remove(indexOfItem);
+        notifyItemRemoved(indexOfItem);
     }
 
     public void removeItem(int position)
     {
-        if (position >= 0 && position < getItemCount())
-        {
-            mItems.remove(position);
-            notifyItemRemoved(position);
-        }
+        mItems.remove(position);
+        notifyItemRemoved(position);
     }
 
-    public void updateItem(int adapterPosition, ListViewCard.Item item)
+    public void updateItem(int position, ListViewCard.Item item)
     {
-        if (adapterPosition >= 0 && adapterPosition < getItemCount())
-        {
-            mItems.set(adapterPosition, item);
-            notifyItemChanged(adapterPosition);
-        }
+        mItems.set(position, item);
+        notifyItemChanged(position);
     }
 
     public void hideDivider()
