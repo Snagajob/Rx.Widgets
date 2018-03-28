@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ListViewCardButtonText" parent="TextAppearance.AppCompat.Button" />
+
+    <style name="ExpandableButtonGroupText" parent="TextAppearance.AppCompat.Caption" />
+
+    <style name="AvatarTwoLinesPrimaryText" parent="TextAppearance.AppCompat.Subhead" />
+
+    <style name="AvatarTwoLinesSecondaryText" parent="TextAppearance.AppCompat.Body1" />
+</resources>

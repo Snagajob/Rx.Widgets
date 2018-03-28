@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
-def cfg = rootProject.ext.configuration;
-def lib = rootProject.ext.libraries;
+def cfg = rootProject.ext.configuration
+def lib = rootProject.ext.libraries
 
 android {
     compileSdkVersion cfg.compileSdkVersion
@@ -9,9 +9,6 @@ android {
 
     defaultConfig {
         applicationId "io.andref.rx.widget.example"
-        jackOptions {
-            enabled cfg.jackEnabled
-        }
         minSdkVersion cfg.minSdkVersion
         targetSdkVersion cfg.targetSdkVersion
         versionCode cfg.versionCode
