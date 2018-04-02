@@ -23,6 +23,7 @@
             android:layout_below="@id/recycler_view"
             android:background="?android:selectableItemBackground"
             android:clickable="true"
+            android:focusable="true"
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
 
@@ -31,11 +32,11 @@
                 android:alpha=".5"
                 android:layout_gravity="center_vertical"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="72dp"
+                android:layout_marginStart="72dp"
                 android:layout_width="wrap_content"
                 android:text="@string/rxw_secondary_text"
                 android:textColor="@android:color/black"
-                style="@style/TextAppearance.AppCompat.Button"/>
+                style="@style/ListViewCardButtonText"/>
 
         </FrameLayout>
 
