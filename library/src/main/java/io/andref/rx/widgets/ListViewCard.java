@@ -16,17 +16,18 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.List;
 
-import rx.Observable;
+import io.reactivex.Observable;
+
 
 public class ListViewCard extends FrameLayout
 {
     public static final String TAG = "ListViewCard";
 
-    private Observable<Void> mButtonClicks = Observable.empty();
+    private Observable<Object> mButtonClicks = Observable.empty();
 
     private FrameLayout mButton;
     private TextView mButtonText;
@@ -148,7 +149,7 @@ public class ListViewCard extends FrameLayout
 
     // region Observables
 
-    public Observable<Void> buttonClicks()
+    public Observable<Object> buttonClicks()
     {
         return mButtonClicks;
     }
