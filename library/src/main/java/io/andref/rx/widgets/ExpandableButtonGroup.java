@@ -25,13 +25,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
 
 public class ExpandableButtonGroup extends FrameLayout
 {
@@ -42,8 +42,8 @@ public class ExpandableButtonGroup extends FrameLayout
     private List<Item> mItems = new ArrayList<>();
 
     private Observable<Item> mItemClicks;
-    private Observable<Void> mLessItemsClicks;
-    private Observable<Void> mMoreItemsClicks;
+    private Observable<Object> mLessItemsClicks;
+    private Observable<Object> mMoreItemsClicks;
 
     private int mBackgroundTint;
     private int mDrawableLess;
@@ -241,14 +241,13 @@ public class ExpandableButtonGroup extends FrameLayout
 
                 itemObservables.add(
                         RxView.clicks(itemView)
-                                .map(new Func1<Void, Item>()
-                                {
+                                .map(new Function<Object, Item>() {
                                     @Override
-                                    public Item call(Void aVoid)
-                                    {
+                                    public Item apply(Object o) throws Exception {
                                         return item;
                                     }
                                 })
+
                 );
             }
 
@@ -301,12 +300,12 @@ public class ExpandableButtonGroup extends FrameLayout
         return mItemClicks;
     }
 
-    public Observable<Void> lessItemClicks()
+    public Observable<Object> lessItemClicks()
     {
         return mLessItemsClicks;
     }
 
-    public Observable<Void> moreItemClicks()
+    public Observable<Object> moreItemClicks()
     {
         return mMoreItemsClicks;
     }

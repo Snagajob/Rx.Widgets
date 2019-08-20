@@ -16,14 +16,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.functions.Action1;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.subjects.PublishSubject;
 
 import static android.view.View.GONE;
 import static io.andref.rx.widgets.ListViewCard.TAG;
@@ -50,7 +50,9 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
         mAvatarTint = avatarTint;
     }
 
+    @SuppressWarnings("CheckResult")
     @Override
+    @NonNull
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rxw_avatar_with_two_lines_and_icon, parent, false);
@@ -58,23 +60,20 @@ public class ListViewCardAdapter extends RecyclerView.Adapter
 
         RxView.clicks(view)
                 .takeUntil(RxView.detaches(parent))
-                .subscribe(new Action1<Void>()
-                {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void call(Void aVoid)
-                    {
+                    public void accept(Object o) throws Exception {
                         mItemClicks.onNext(mItems.get(viewHolder.getAdapterPosition()));
                     }
                 });
 
+
         View iconView = view.findViewById(R.id.image_button);
         RxView.clicks(iconView)
                 .takeUntil(RxView.detaches(parent))
-                .subscribe(new Action1<Void>()
-                {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void call(Void aVoid)
-                    {
+                    public void accept(Object o) throws Exception {
                         mIconClicks.onNext(mItems.get(viewHolder.getAdapterPosition()));
                     }
                 });
