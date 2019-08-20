@@ -13,10 +13,12 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    internal var disposable = CompositeDisposable()
+    private var disposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_main)
 
         /* ExpandableButtonGroup */
         val expandableButtonGroupItems = ArrayList<ExpandableButtonGroup.Item<*>>()
@@ -33,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         expandableButtonGroupItems.add(ExpandableButtonGroup.Item<Any>("Post Offices", R.drawable.ic_local_post_office_black_24dp))
         expandableButtonGroupItems.add(ExpandableButtonGroup.Item<Any>("Parking", R.drawable.ic_local_parking_black_24dp))
 
-        val expandableButtonGroup : ExpandableButtonGroup = findViewById(R.id.expandableButtonGroup)
         expandableButtonGroup.items = expandableButtonGroupItems
 
 
@@ -49,6 +50,10 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+
+
+
 
     @SuppressWarnings("CheckResult")
     override fun onResume() {
